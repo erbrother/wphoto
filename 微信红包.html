@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>微信红包照片</title>
+<style>
+	#blur-div{
+		width:800px;
+		height:600px;
+		margin:0 auto;
+		position:relative;
+	}
+
+	#blur-img{
+		display:block;
+		width:800px;
+		height:600px;
+		margin:0px auto;
+		
+		/****CSS3新特性 模糊*********/
+		filter:blur(30px);
+		-webkit-filter:blur(15px);
+		-moz-filter:blur(15px);
+		-ms-filter:blur(15px);
+		-o-filter:blur(15px);
+		
+		positon:absolute;
+		left:0px;
+		top:0px;
+		z-index:0;
+	}
+	#canvas{
+		display:block;
+		margin:0 auto;
+		
+		position:absolute;
+		left:0px;
+		top:0px;
+		z-index:10;
+	}
+	
+	.button{
+	display:block;
+	position:absolute;
+	z-index:20;
+	
+	width:100px;
+	height:30px;
+	
+	color:white;
+	text-decoration:none;
+	text-align:center;
+	line-height:30px;
+	
+	border-radius:5px;	
+	}
+	
+	#reset-button{
+		left:200px;
+		bottom:20px;
+		background-color:#058;
+	}
+	#reset-button:hover{
+		background-color:#047;
+	}
+	
+	#show-button{
+		right:200px;
+		bottom:20px;
+		background-color:#085;
+	}
+	#show-button:hover{
+		background-color:#074;
+	}
+	
+</style>
+</head>
+
+<body>
+	<div id="blur-div">
+		<img id="blur-img" src="gold.jpg" />
+    	<canvas id="canvas" width="800px" height="600px"></canvas>
+        <a href="javascript:reset()" class="button" id="reset-button">RESET</a>
+        <a href="javascript:show()" class="button" id="show-button">SHOW</a>
+    </div>	
+    	
+</body>
+
+<script>
+	var canvas= document.getElementById("canvas");
+	var context= canvas.getContext("2d");
+	/*对象 剪辑区域*/
+	var clippingRegion ={
+		x:Math.random()*700+50,
+		y:Math.random()*500+50,
+		r:50,
+		};
+	var image = new Image();
+	image.src = "gold.jpg";
+	
+	image.onload=function(){
+		initCanvas();
+	};
+	
+	function initCanvas(){
+		clippingRegion ={x:Math.random()*700+50,	y:Math.random()*500+50,	r:50,};
+		draw ( image,clippingRegion);
+	}
+	
+	function setClippingRegion(clippingRegion){
+		context.beginPath();
+		context.arc(clippingRegion.x,clippingRegion.y,clippingRegion.r,0,Math.PI*2);
+		context.clip();
+	}
+	
+	function draw (image,clippingRegin){
+		context.clearRect(0,0,800,600);
+		
+		context.save();
+		
+		setClippingRegion ( clippingRegion );
+		context.drawImage(image,0,0);
+		context.restore();
+	}
+
+	function show(){
+		var theAnimation=
+			setInterval(function(){
+				clippingRegion.r+=20;
+				if(clippingRegion.r>1000){
+					clearInterval(theAnimation);
+				}
+				draw(image,clippingRegion);	
+		},10);
+	}
+	
+	function reset(){
+		initCanvas();
+	}
+</script>
+</html>
